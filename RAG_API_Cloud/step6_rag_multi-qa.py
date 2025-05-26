@@ -178,7 +178,7 @@ def search_knowledge_and_chat_completion():
    messages =[ 
        { 
            "role": "system", 
-           "content": prompt  #LLM instruction + retrieval result 
+           "content": prompt  #LLM instruction + retrieval result test
        }, 
        { 
            "role": "user", 
