@@ -1,0 +1,1 @@
+this template/index is optional. Mainly is for building a simple frontend and hook it up to the backend rag to ask questions
