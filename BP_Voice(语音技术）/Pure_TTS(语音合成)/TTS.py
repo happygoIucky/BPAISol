@@ -1,7 +1,7 @@
 # Text to Speech
-# coding=utf-8
-# output will be saved in your local folder
-# this ep is tested in VE.
+# Replace <appid>, <accesstoken> and <text>
+# Output will be saved in your local folder
+
 
 '''
 requires Python 3.6 or later
@@ -41,7 +41,7 @@ request_json = {
     },
     "request": {
         "reqid": str(uuid.uuid4()),
-        "text": "字节跳动语音合成",
+        "text": "you are awesome",
         "text_type": "plain",
         "operation": "query",
         "with_frontend": 1,

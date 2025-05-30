@@ -1,28 +1,27 @@
 import os
-# 通过 pip install volcengine-python-sdk[ark] 安装方舟SDK
+# install pip install volcengine-python-sdk[ark]
 from volcenginesdkarkruntime import Ark
 
-# 替换 <MODEL> 为模型的Model ID
+# replace <MODEL> with the model ID
 model="doubao-1.5-vision-pro"
 
-# 初始化Ark客户端，从环境变量中读取您的API Key
+# key in your api key or you could also put in your env variable
 client = Ark(
     api_key='yourapikey',
     )
 
-# 创建一个对话请求
+# Create a new chat
 response = client.chat.completions.create(
-    # 指定您部署了视觉理解大模型的推理接入点ID
+    
     model = model,
     messages = [
         {
-            # 指定消息的角色为用户
             "role": "user",  
             "content": [   
                 {
                     "type": "video_url",
                     "video_url": {
-                        # 您可以替换链接为您的实际视频链接
+                        # replace your video location below
                         "url":  "yourvideopath",
                     }
                 },
