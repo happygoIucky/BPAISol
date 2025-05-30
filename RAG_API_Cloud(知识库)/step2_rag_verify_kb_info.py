@@ -45,7 +45,7 @@ def create():
     method = "POST"
     path = "/api/knowledge/collection/info" 
     request_params = {
-        "project": "abc",
+        "project": "",
         "name": "test"
     }
 
