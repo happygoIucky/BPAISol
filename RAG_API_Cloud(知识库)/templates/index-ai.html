@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PIL RAG Chatbot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-image: url('https://jl-tos.tos-ap-southeast-1.bytepluses.com/PIL-Kota-Eagle-and-Kota-Emerald-DI_MR.jpg');
+      background-size: cover;
+      background-position: center 15px;
+      background-repeat: no-repeat;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 60px 20px;
+      color: #333;
+    }
+
+    .chat-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+      padding: 24px;
+      width: 100%;
+      max-width: 700px;
+    }
+
+    h2 {
+      font-weight: 600;
+      margin-bottom: 24px;
+      font-size: 24px;
+      text-align: center;
+      color: #1a1a1a;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #0066ff;
+    }
+
+    button {
+      padding: 12px 20px;
+      background-color: #0066ff;
+      border: none;
+      color: white;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #0050cc;
+    }
+
+    #chatBox {
+      background-color: #f9fafc;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #e0e0e0;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .user-question {
+      font-weight: 600;
+      color: #0066ff;
+      margin-bottom: 12px;
+    }
+
+    .assistant-answer {
+      font-weight: 400;
+      color: #333;
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <h2>💬 PIL KB (Internal)</h2>
+    
+    <div class="input-row">
+      <input type="text" id="userQuery" placeholder="Ask something about PIL Sustainability Report..." />
+      <button onclick="sendQuery()">Ask</button>
+    </div>
+
+    <div id="chatBox">
+      <div class="assistant-answer">💡 I'm ready to answer your questions about PIL Sustainability Report.</div>
+    </div>
+  </div>
+
+  <!-- EventSource polyfill for POST streaming -->
+  <script src="https://unpkg.com/@microsoft/fetch-event-source@2.0.1/lib/index.umd.js"></script>
+  <script>
+    async function sendQuery() {
+      const input = document.getElementById("userQuery");
+      const chatBox = document.getElementById("chatBox");
+      const query = input.value.trim();
+      if (!query) return;
+
+      chatBox.innerHTML = `
+        <div class="user-question">❓ You: ${query}</div>
+        <div class="assistant-answer" id="answerBox">⏳ Thinking...</div>
+      `;
+
+      let answer = "";
+      const answerBox = document.getElementById("answerBox");
+
+      try {
+        await window.fetchEventSource("/chat/stream", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ query }),
+          onmessage(msg) {
+            if (msg.data === "[DONE]") {
+              return;
+            }
+            try {
+              const parsed = JSON.parse(msg.data);
+              if (parsed.delta) {
+                answer += parsed.delta;
+                answerBox.textContent = answer;
+              }
+            } catch (err) {
+              console.warn("Parse error:", msg.data);
+            }
+          },
+          onerror(err) {
+            console.error("Stream error:", err);
+            answerBox.textContent = "⚠️ Something went wrong.";
+          },
+          openWhenHidden: true
+        });
+      } catch (err) {
+        answerBox.textContent = "⚠️ Failed to connect to server.";
+        console.error(err);
+      }
+
+      input.value = "";
+    }
+  </script>
+</body>
+</html>
