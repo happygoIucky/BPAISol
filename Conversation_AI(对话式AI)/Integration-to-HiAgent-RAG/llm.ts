@@ -83,7 +83,7 @@ export class LLMManager {
       /**
        * @note Fixed value, `https://api.openai.com/v1/chat/completions`.
        */
-      Url: 'changetoyour_3rdpartyurl-ensure-this-is-https-typically-i-use-ngrok';
+      Url: 'changetoyour_3rdpartyurl-ensure-this-is-https-typically-i-use-ngrok/chat/stream';
       /**
        * @refer https://platform.openai.com/docs/models#tts
        */
@@ -108,7 +108,7 @@ export class LLMManager {
         Feature: JSON.stringify({ Http: true }),
       },
       [Provider.OpenAI]: {
-        Url: 'changetoyour_3rdpartyurl-ensure-this-is-https-typically-i-use-ngrok',
+        Url: 'changetoyour_3rdpartyurl-ensure-this-is-https-typically-i-use-ngrok/chat/stream',
         Mode: 'CustomLLM',
         ModelName: OpenAiModel['GPT-4o'].endPointId,
         SystemMessages: [],

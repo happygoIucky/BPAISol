@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deepseek-sglang
+  namespace: default
+  labels:
+    app: deepseek-sglang
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deepseek-sglang
+  template:
+    metadata:
+      labels:
+        app: deepseek-sglang
+    spec:
+      volumes:
+        - name: root-vol
+          persistentVolumeClaim:
+            claimName: root-pvc
+        - name: hf-cache
+          hostPath:
+            path: /root/.cache/huggingface  # Adjust if your cache is elsewhere
+            type: DirectoryOrCreate
+      containers:
+        - name: deepseek-sglang
+          image: docker.io/lmsysorg/sglang:latest
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["SYS_ADMIN", "NET_RAW"]
+          imagePullPolicy: Always
+          command: ["python3", "-m", "sglang.launch_server"]
+          args:
+            - "--model-path"
+            - "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
+            - "--host"
+            - "0.0.0.0"
+            - "--port"
+            - "30000"
+          env:
+            - name: HF_TOKEN
+              value: "yourtoken"
+          ports:
+            - containerPort: 30000
+          resources:
+            limits:
+              cpu: "8"
+              memory: 32Gi
+              nvidia.com/gpu: "1"
+            requests:
+              cpu: "4"
+              memory: 16Gi
+              nvidia.com/gpu: "1"
+          volumeMounts:
+            - mountPath: /mnt
+              name: root-vol
+            - mountPath: /root/.cache/huggingface
+              name: hf-cache
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: deepseek-sglang-service
+spec:
+  type: NodePort
+  selector:
+    app: deepseek-sglang
+  ports:
+    - port: 30000
+      targetPort: 30000
+      nodePort: 30000

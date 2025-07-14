@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deepseek-vllm
+  namespace: default
+  labels:
+    app: deepseek-vllm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deepseek-vllm
+  template:
+    metadata:
+      labels:
+        app: deepseek-vllm
+    spec:
+      volumes:
+        - name: root-vol
+          persistentVolumeClaim:
+            claimName: root-pvc
+      containers:
+        - name: deepseek-vllm
+          image: vllm/vllm-openai:latest
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["SYS_ADMIN", "NET_RAW"]
+          command: ["/bin/sh", "-c"]
+          args:
+            - >
+              vllm serve deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
+              --trust-remote-code
+              --max-model-len 4096
+              --tensor-parallel-size 1
+              --max-num-seqs 128
+              --download-dir /mnt
+          env:
+            - name: HUGGING_FACE_HUB_TOKEN
+              value: "yourhuggingfacetoken"
+            - name: PYTORCH_CUDA_ALLOC_CONF
+              value: "expandable_segments:True"
+          ports:
+            - containerPort: 8000
+          resources:
+            limits:
+              cpu: "8"
+              memory: 24Gi
+              nvidia.com/gpu: "1"
+            requests:
+              cpu: "4"
+              memory: 12Gi
+              nvidia.com/gpu: "1"
+          volumeMounts:
+            - mountPath: /mnt
+              name: root-vol
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: deepseek-vllm-service
+  namespace: default
+spec:
+  selector:
+    app: deepseek-vllm
+  ports:
+    - protocol: TCP
+      port: 8000       
+      targetPort: 8000
+  type: NodePort
