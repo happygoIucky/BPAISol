@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xvwa
+  namespace: default
+  labels:
+    app: xvwa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xvwa
+  template:
+    metadata:
+      labels:
+        app: xvwa
+    spec:
+      hostAliases:
+      - ip: "45.78.200.136"
+        hostnames:
+        - "app.1day1kb.com"
+      containers:
+      - name: xvwa
+        image: tuxotron/xvwa
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        volumeMounts:
+        - name: xvwa-config-vol
+          mountPath: /var/www/html/config/config.php
+          subPath: config.php
+      volumes:
+      - name: xvwa-config-vol
+        configMap:
+          name: xvwa-config
+
