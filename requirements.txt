@@ -1,0 +1,41 @@
+# Core web framework
+Flask==2.3.3
+Werkzeug==2.3.7
+
+# HTTP requests
+requests==2.31.0
+
+# JSON handling (built-in, but listing for completeness)
+# json - built-in
+# datetime - built-in
+# uuid - built-in
+# logging - built-in
+# typing - built-in
+
+# Optional: For enhanced functionality
+# Uncomment these if you want to add more features:
+
+# For database support
+# SQLAlchemy==2.0.21
+# Flask-SQLAlchemy==3.0.5
+
+# For authentication
+# Flask-Login==0.6.3
+
+# For CORS support
+# Flask-CORS==4.0.0
+
+# For environment variables
+# python-dotenv==1.0.0
+
+# For AI/ML integrations
+# openai==0.28.1
+# anthropic==0.3.11
+
+# For voice processing (if implementing voice features)
+# speechrecognition==3.10.0
+# pyttsx3==2.90
+
+# For advanced text processing
+# nltk==3.8.1
+# spacy==3.6.1

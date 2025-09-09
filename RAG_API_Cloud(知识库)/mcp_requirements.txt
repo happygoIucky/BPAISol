@@ -1,0 +1,5 @@
+# MCP Server Requirements
+mcp>=1.0.0
+sqlite3
+aiofiles>=23.0.0
+typing-extensions>=4.0.0

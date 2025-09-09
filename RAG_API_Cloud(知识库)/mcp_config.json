@@ -1,0 +1,45 @@
+{
+  "mcpServers": {
+    "patient-database": {
+      "command": "python",
+      "args": ["/Users/bytedance/Desktop/BPAISol/RAG_API_Cloud(知识库)/mcp_patient_server.py"],
+      "env": {
+        "PYTHONPATH": "/Users/bytedance/Desktop/BPAISol/RAG_API_Cloud(知识库)"
+      },
+      "description": "Patient database server for healthcare agents",
+      "capabilities": [
+        "tools"
+      ],
+      "security": {
+        "allowedAgents": ["healthcare-agent", "medical-assistant"],
+        "requireAuth": true
+      }
+    }
+  },
+  "tools": {
+    "get_patient": {
+      "description": "Retrieve detailed patient information including medical records",
+      "parameters": {
+        "patient_id": "string (required) - Patient ID like P001, P002, etc."
+      },
+      "example": "get_patient with patient_id: P001"
+    },
+    "search_patients": {
+      "description": "Search patients by various criteria",
+      "parameters": {
+        "query": "string (optional) - Search term for name, diagnosis, or treatment",
+        "status": "string (optional) - Filter by status: active or discharged"
+      },
+      "examples": [
+        "search_patients with query: diabetes",
+        "search_patients with status: active",
+        "search_patients with query: John and status: active"
+      ]
+    },
+    "get_statistics": {
+      "description": "Get database statistics and summary information",
+      "parameters": {},
+      "example": "get_statistics (no parameters needed)"
+    }
+  }
+}
